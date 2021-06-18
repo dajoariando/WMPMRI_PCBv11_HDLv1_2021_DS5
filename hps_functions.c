@@ -59,6 +59,7 @@ void mmap_fpga_peripherals() {
 
 	// axi master slave devices
 	axi_bitstr_fifo = axi_base + BITSTR_FIFO_IN_BASE;
+	axi_ram_tx_en = axi_base + RAM_TX_EN_BASE;
 
 }
 
@@ -85,12 +86,12 @@ void munmap_peripherals() {
 
 void init_default_system_param() {
 
-	// initialize control lines to default value
+// initialize control lines to default value
 	cnt_out = CNT_OUT_default;
 	alt_write_word((lwaxi_cnt_out), cnt_out);
 	usleep(100);
 
-	// set reconfig configuration for pll's
+// set reconfig configuration for pll's
 	Reconfig_Mode(lwaxi_sys_pll, 1);   // polling mode for main pll
 
 }

@@ -8,6 +8,9 @@
 #ifndef GLOB_VARS_H_
 #define GLOB_VARS_H_
 
+// #include <socal/hps.h>
+// #include <hwlib.h>
+
 // global variables
 extern int fd_dev_mem;   // physical memory file descriptor
 extern unsigned int cnt_out;
@@ -23,9 +26,11 @@ extern unsigned int *lwaxi_bitstr_fifo_csr;   // bitstream fifo status address
 extern unsigned int *lwaxi_led;					// LED
 extern unsigned int *lwaxi_sw;					// switches
 extern unsigned int *lwaxi_button;				// button
+extern unsigned int *axi_ram_tx_en;				// ram for tx_en
 
 // additional parameters
-size_t h2f_lw_axi_master_span = ALT_LWFPGASLVS_UB_ADDR - ALT_LWFPGASLVS_LB_ADDR + 1;
+// size_t h2f_lw_axi_master_span = ALT_LWFPGASLVS_UB_ADDR - ALT_LWFPGASLVS_LB_ADDR + 1;
+#define h2f_lw_axi_master_span (0x200000)
 #define ALT_AXI_FPGASLVS_OFST (0xC0000000) // axi_master
 #define HW_FPGA_AXI_SPAN (0x40000000) // Bridge span
 #define HW_FPGA_AXI_MASK ( HW_FPGA_AXI_SPAN - 1 )

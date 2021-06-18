@@ -4,18 +4,21 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../functions/bstream.c \
 ../functions/common_functions.c \
 ../functions/pll_calculator.c \
 ../functions/pll_param_generator.c \
 ../functions/reconfig_functions.c 
 
 OBJS += \
+./functions/bstream.o \
 ./functions/common_functions.o \
 ./functions/pll_calculator.o \
 ./functions/pll_param_generator.o \
 ./functions/reconfig_functions.o 
 
 C_DEPS += \
+./functions/bstream.d \
 ./functions/common_functions.d \
 ./functions/pll_calculator.d \
 ./functions/pll_param_generator.d \

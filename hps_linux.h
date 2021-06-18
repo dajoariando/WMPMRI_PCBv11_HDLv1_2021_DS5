@@ -35,5 +35,6 @@
 #include "functions/pll_param_generator.h"
 #include "hps_soc_system.h"
 #include "hps_functions.h"
+#include "functions/bstream.h"
 
 #endif /* HPS_LINUX_H_ */

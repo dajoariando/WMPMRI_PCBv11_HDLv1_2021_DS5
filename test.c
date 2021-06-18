@@ -18,58 +18,49 @@ unsigned int *lwaxi_bitstr_fifo_csr = NULL;   // bitstream fifo status address
 unsigned int *lwaxi_led = NULL;					// LED
 unsigned int *lwaxi_sw = NULL;					// switches
 unsigned int *lwaxi_button = NULL;				// button
+unsigned int *axi_ram_tx_en = NULL;
 
 int main() {
 
-	double clk_freq = 12;
-
 	init();
 
-	/* set pll for CPMG
+	/*
+	 *  set pll for CPMG
+	 *
+	 *  double clk_freq = 12;
 	 Set_PLL(lwaxi_sys_pll, 0, clk_freq, 0.5, DISABLE_MESSAGE);
 	 Reset_PLL(lwaxi_cnt_out, SYS_PLL_RST_ofst, ctrl_out);
 	 Set_DPS(lwaxi_sys_pll, 0, 0, DISABLE_MESSAGE);
 	 Wait_PLL_To_Lock(lwaxi_cnt_in, PLL_SYS_lock_ofst);
 	 */
 
-	// reset the FIFO
-	cnt_out |= BITSTR_FIFO_RST;
-	*lwaxi_cnt_out = cnt_out;
-	usleep(100);
-	cnt_out &= ~BITSTR_FIFO_RST;
-	*lwaxi_cnt_out = cnt_out;
+	alt_write_word(lwaxi_led, 0xFF);
+	alt_write_word(lwaxi_led, 0x00);
 
-	//
-	int i;
-	unsigned int x = 0x00000000;
-	for (i = 0; i < 256; i++) {
-		alt_write_word(axi_bitstr_fifo, (x++) & (~(1 << 31)));
-	}
-	alt_write_word(axi_bitstr_fifo, (1 << 31));
-
-	// printf("data in fifo: %d\n", *lwaxi_bitstr_fifo_csr);
-
-	// start the bitstream
-	cnt_out |= BITSTR_START;
+	cnt_out |= BITSTR_ADV_RST;
 	*lwaxi_cnt_out = cnt_out;
-	cnt_out &= ~BITSTR_START;
+	cnt_out &= ~BITSTR_ADV_RST;
 	*lwaxi_cnt_out = cnt_out;
 
-	//for (i = 0; i < 128; i++) {
-	//	alt_write_word(axi_bitstr_fifo, (x++) & (~(1 << 31)));
-	//}
-	//alt_write_word(axi_bitstr_fifo, (1 << 31));
+	bstream_obj obj_gpio0_1;
+	bstream__init(&obj_gpio0_1, axi_ram_tx_en, 5);
 
-	while (!(alt_read_word(lwaxi_cnt_in) & BITSTR_END))
-		;
+	bstream__all_1s(&obj_gpio0_1, 10);
+	bstream__all_0s(&obj_gpio0_1, 10);
+	bstream__all_1s(&obj_gpio0_1, 30);
 
-	// stop the bitstream
-	cnt_out |= BITSTR_STOP;
+	bstream__loop_sta(&obj_gpio0_1);
+	bstream__pattern(&obj_gpio0_1, 0xAAAA, 0x0000);
+
+	bstream__loop_sto(&obj_gpio0_1);
+	bstream__pattern(&obj_gpio0_1, 0xF0F0, 0x0000);
+
+	bstream__end_of_seq(&obj_gpio0_1);
+
+	cnt_out |= BITSTR_ADV_START;
 	*lwaxi_cnt_out = cnt_out;
-	cnt_out &= ~BITSTR_STOP;
+	cnt_out &= ~BITSTR_ADV_START;
 	*lwaxi_cnt_out = cnt_out;
-
-	// printf("data in fifo: %d\n", *lwaxi_bitstr_fifo_csr);
 
 	leave();
 

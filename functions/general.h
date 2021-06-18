@@ -1,4 +1,6 @@
 // offsets for output control signal
+#define BITSTR_ADV_RST_ofst				(6)
+#define	BITSTR_ADV_START_ofst			(5)
 #define SYS_PLL_RST_ofst				(4)
 #define BITSTR_STOP_ofst				(3)
 #define BITSTR_RST_ofst					(2)
@@ -6,7 +8,9 @@
 #define BITSTR_FIFO_RST_ofst			(0)
 
 // Output control signal to FPGA
-#define SYS_PLL_RST					(1<<SYS_PLL_RST_ofst)
+#define BITSTR_ADV_RST				(1<<BITSTR_ADV_RST_ofst)
+#define	BITSTR_ADV_START			(1<<BITSTR_ADV_START_ofst)
+#define SYS_PLL_RST					(1<<SYS_PLL_RST_ofst_ofst)
 #define BITSTR_STOP					(1<<BITSTR_STOP_ofst)
 #define BITSTR_RST					(1<<BITSTR_RST_ofst)
 #define BITSTR_START				(1<<BITSTR_START_ofst)
