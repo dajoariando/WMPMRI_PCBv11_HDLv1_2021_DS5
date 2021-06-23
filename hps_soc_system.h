@@ -21,6 +21,17 @@
  */
 
 /*
+ * Macros for device 'tx_DUMP', class 'bstream'
+ * The macros are prefixed with 'TX_DUMP_'.
+ * The prefix is the slave descriptor.
+ */
+#define TX_DUMP_COMPONENT_TYPE bstream
+#define TX_DUMP_COMPONENT_NAME tx_DUMP
+#define TX_DUMP_BASE 0x0
+#define TX_DUMP_SPAN 4096
+#define TX_DUMP_END 0xfff
+
+/*
  * Macros for device 'sys_pll_reconfig', class 'altera_pll_reconfig'
  * The macros are prefixed with 'SYS_PLL_RECONFIG_'.
  * The prefix is the slave descriptor.
@@ -109,37 +120,99 @@
 #define CNT_OUT_RESET_VALUE 0
 
 /*
- * Macros for device 'ram_tx_en', class 'altera_avalon_onchip_memory2'
- * The macros are prefixed with 'RAM_TX_EN_'.
+ * Macros for device 'tx_DAMP', class 'bstream'
+ * The macros are prefixed with 'TX_DAMP_'.
  * The prefix is the slave descriptor.
  */
-#define RAM_TX_EN_COMPONENT_TYPE altera_avalon_onchip_memory2
-#define RAM_TX_EN_COMPONENT_NAME ram_tx_en
-#define RAM_TX_EN_BASE 0x10000
-#define RAM_TX_EN_SPAN 4096
-#define RAM_TX_EN_END 0x10fff
-#define RAM_TX_EN_ALLOW_IN_SYSTEM_MEMORY_CONTENT_EDITOR 0
-#define RAM_TX_EN_ALLOW_MRAM_SIM_CONTENTS_ONLY_FILE 0
-#define RAM_TX_EN_CONTENTS_INFO ""
-#define RAM_TX_EN_DUAL_PORT 1
-#define RAM_TX_EN_GUI_RAM_BLOCK_TYPE AUTO
-#define RAM_TX_EN_INIT_CONTENTS_FILE soc_system_ram_tx_en
-#define RAM_TX_EN_INIT_MEM_CONTENT 0
-#define RAM_TX_EN_INSTANCE_ID NONE
-#define RAM_TX_EN_NON_DEFAULT_INIT_FILE_ENABLED 0
-#define RAM_TX_EN_RAM_BLOCK_TYPE AUTO
-#define RAM_TX_EN_READ_DURING_WRITE_MODE DONT_CARE
-#define RAM_TX_EN_SINGLE_CLOCK_OP 0
-#define RAM_TX_EN_SIZE_MULTIPLE 1
-#define RAM_TX_EN_SIZE_VALUE 4096
-#define RAM_TX_EN_WRITABLE 1
-#define RAM_TX_EN_MEMORY_INFO_DAT_SYM_INSTALL_DIR SIM_DIR
-#define RAM_TX_EN_MEMORY_INFO_GENERATE_DAT_SYM 1
-#define RAM_TX_EN_MEMORY_INFO_GENERATE_HEX 1
-#define RAM_TX_EN_MEMORY_INFO_HAS_BYTE_LANE 0
-#define RAM_TX_EN_MEMORY_INFO_HEX_INSTALL_DIR QPF_DIR
-#define RAM_TX_EN_MEMORY_INFO_MEM_INIT_DATA_WIDTH 128
-#define RAM_TX_EN_MEMORY_INFO_MEM_INIT_FILENAME soc_system_ram_tx_en
+#define TX_DAMP_COMPONENT_TYPE bstream
+#define TX_DAMP_COMPONENT_NAME tx_DAMP
+#define TX_DAMP_BASE 0x1000
+#define TX_DAMP_SPAN 4096
+#define TX_DAMP_END 0x1fff
+
+/*
+ * Macros for device 'tx_CHRG', class 'bstream'
+ * The macros are prefixed with 'TX_CHRG_'.
+ * The prefix is the slave descriptor.
+ */
+#define TX_CHRG_COMPONENT_TYPE bstream
+#define TX_CHRG_COMPONENT_NAME tx_CHRG
+#define TX_CHRG_BASE 0x2000
+#define TX_CHRG_SPAN 4096
+#define TX_CHRG_END 0x2fff
+
+/*
+ * Macros for device 'tx_L2', class 'bstream'
+ * The macros are prefixed with 'TX_L2_'.
+ * The prefix is the slave descriptor.
+ */
+#define TX_L2_COMPONENT_TYPE bstream
+#define TX_L2_COMPONENT_NAME tx_L2
+#define TX_L2_BASE 0x3000
+#define TX_L2_SPAN 4096
+#define TX_L2_END 0x3fff
+
+/*
+ * Macros for device 'tx_L1', class 'bstream'
+ * The macros are prefixed with 'TX_L1_'.
+ * The prefix is the slave descriptor.
+ */
+#define TX_L1_COMPONENT_TYPE bstream
+#define TX_L1_COMPONENT_NAME tx_L1
+#define TX_L1_BASE 0x4000
+#define TX_L1_SPAN 4096
+#define TX_L1_END 0x4fff
+
+/*
+ * Macros for device 'tx_H2', class 'bstream'
+ * The macros are prefixed with 'TX_H2_'.
+ * The prefix is the slave descriptor.
+ */
+#define TX_H2_COMPONENT_TYPE bstream
+#define TX_H2_COMPONENT_NAME tx_H2
+#define TX_H2_BASE 0x5000
+#define TX_H2_SPAN 4096
+#define TX_H2_END 0x5fff
+
+/*
+ * Macros for device 'tx_H1', class 'bstream'
+ * The macros are prefixed with 'TX_H1_'.
+ * The prefix is the slave descriptor.
+ */
+#define TX_H1_COMPONENT_TYPE bstream
+#define TX_H1_COMPONENT_NAME tx_H1
+#define TX_H1_BASE 0x6000
+#define TX_H1_SPAN 4096
+#define TX_H1_END 0x6fff
+
+/*
+ * Macros for device 'bitstr_fifo_in', class 'altera_avalon_fifo'
+ * The macros are prefixed with 'BITSTR_FIFO_IN_'.
+ * The prefix is the slave descriptor.
+ */
+#define BITSTR_FIFO_IN_COMPONENT_TYPE altera_avalon_fifo
+#define BITSTR_FIFO_IN_COMPONENT_NAME bitstr_fifo
+#define BITSTR_FIFO_IN_BASE 0x7000
+#define BITSTR_FIFO_IN_SPAN 8
+#define BITSTR_FIFO_IN_END 0x7007
+#define BITSTR_FIFO_IN_AVALONMM_AVALONMM_DATA_WIDTH 32
+#define BITSTR_FIFO_IN_AVALONMM_AVALONST_DATA_WIDTH 32
+#define BITSTR_FIFO_IN_BITS_PER_SYMBOL 32
+#define BITSTR_FIFO_IN_CHANNEL_WIDTH 0
+#define BITSTR_FIFO_IN_ERROR_WIDTH 0
+#define BITSTR_FIFO_IN_FIFO_DEPTH 8192
+#define BITSTR_FIFO_IN_SINGLE_CLOCK_MODE 0
+#define BITSTR_FIFO_IN_SYMBOLS_PER_BEAT 1
+#define BITSTR_FIFO_IN_USE_AVALONMM_READ_SLAVE 0
+#define BITSTR_FIFO_IN_USE_AVALONMM_WRITE_SLAVE 1
+#define BITSTR_FIFO_IN_USE_AVALONST_SINK 0
+#define BITSTR_FIFO_IN_USE_AVALONST_SOURCE 1
+#define BITSTR_FIFO_IN_USE_BACKPRESSURE 1
+#define BITSTR_FIFO_IN_USE_IRQ 0
+#define BITSTR_FIFO_IN_USE_PACKET 0
+#define BITSTR_FIFO_IN_USE_READ_CONTROL 0
+#define BITSTR_FIFO_IN_USE_REGISTER 0
+#define BITSTR_FIFO_IN_USE_WRITE_CONTROL 1
 
 /*
  * Macros for device 'led_pio', class 'altera_avalon_pio'
@@ -214,35 +287,6 @@
 #define BUTTON_PIO_HAS_TRI 0
 #define BUTTON_PIO_IRQ_TYPE EDGE
 #define BUTTON_PIO_RESET_VALUE 0
-
-/*
- * Macros for device 'bitstr_fifo_in', class 'altera_avalon_fifo'
- * The macros are prefixed with 'BITSTR_FIFO_IN_'.
- * The prefix is the slave descriptor.
- */
-#define BITSTR_FIFO_IN_COMPONENT_TYPE altera_avalon_fifo
-#define BITSTR_FIFO_IN_COMPONENT_NAME bitstr_fifo
-#define BITSTR_FIFO_IN_BASE 0x11000
-#define BITSTR_FIFO_IN_SPAN 8
-#define BITSTR_FIFO_IN_END 0x11007
-#define BITSTR_FIFO_IN_AVALONMM_AVALONMM_DATA_WIDTH 32
-#define BITSTR_FIFO_IN_AVALONMM_AVALONST_DATA_WIDTH 32
-#define BITSTR_FIFO_IN_BITS_PER_SYMBOL 32
-#define BITSTR_FIFO_IN_CHANNEL_WIDTH 0
-#define BITSTR_FIFO_IN_ERROR_WIDTH 0
-#define BITSTR_FIFO_IN_FIFO_DEPTH 8192
-#define BITSTR_FIFO_IN_SINGLE_CLOCK_MODE 0
-#define BITSTR_FIFO_IN_SYMBOLS_PER_BEAT 1
-#define BITSTR_FIFO_IN_USE_AVALONMM_READ_SLAVE 0
-#define BITSTR_FIFO_IN_USE_AVALONMM_WRITE_SLAVE 1
-#define BITSTR_FIFO_IN_USE_AVALONST_SINK 0
-#define BITSTR_FIFO_IN_USE_AVALONST_SOURCE 1
-#define BITSTR_FIFO_IN_USE_BACKPRESSURE 1
-#define BITSTR_FIFO_IN_USE_IRQ 0
-#define BITSTR_FIFO_IN_USE_PACKET 0
-#define BITSTR_FIFO_IN_USE_READ_CONTROL 0
-#define BITSTR_FIFO_IN_USE_REGISTER 0
-#define BITSTR_FIFO_IN_USE_WRITE_CONTROL 1
 
 
 #endif /* _ALTERA_HPS_SOC_SYSTEM_H_ */

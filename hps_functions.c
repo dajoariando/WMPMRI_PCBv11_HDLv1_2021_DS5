@@ -59,7 +59,7 @@ void mmap_fpga_peripherals() {
 
 	// axi master slave devices
 	axi_bitstr_fifo = axi_base + BITSTR_FIFO_IN_BASE;
-	axi_ram_tx_en = axi_base + RAM_TX_EN_BASE;
+	axi_ram_tx_h1 = axi_base + TX_H1_BASE;
 
 }
 

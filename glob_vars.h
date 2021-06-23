@@ -26,7 +26,7 @@ extern unsigned int *lwaxi_bitstr_fifo_csr;   // bitstream fifo status address
 extern unsigned int *lwaxi_led;					// LED
 extern unsigned int *lwaxi_sw;					// switches
 extern unsigned int *lwaxi_button;				// button
-extern unsigned int *axi_ram_tx_en;				// ram for tx_en
+extern unsigned int *axi_ram_tx_h1;				// ram for the tx_h1
 
 // additional parameters
 // size_t h2f_lw_axi_master_span = ALT_LWFPGASLVS_UB_ADDR - ALT_LWFPGASLVS_LB_ADDR + 1;

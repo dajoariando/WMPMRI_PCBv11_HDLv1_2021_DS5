@@ -27,10 +27,6 @@ void bstream__push(bstream_obj * obj, char pattern_mode, char all_1s_mode, char 
 	return;
 }
 
-void useless(bstream_obj * obj) {
-	printf("data: %d\n", obj->curr_ofst);
-}
-
 void bstream__init(bstream_obj *obj, void *sram_addr, unsigned long repetition) {
 
 	obj->sram_addr = sram_addr;
@@ -38,22 +34,37 @@ void bstream__init(bstream_obj *obj, void *sram_addr, unsigned long repetition) 
 	obj->loop_sta = 0;
 	obj->loop_sto = 0;
 	obj->end_of_seq = 0;
+	obj->repetition = repetition;
+	obj->error_seq = SEQ_OK;   // set the error sequence to be 0
 
 	// write the repetition and increment the address by 4
 	alt_write_word(obj->sram_addr + obj->curr_ofst + 0, (unsigned int) (repetition & 0xFFFFFFFF));
 	obj->curr_ofst += 4;
 }
 
-void bstream__loop_sta(bstream_obj *obj) {
-	obj->loop_sta = 1;
-	obj->loop_sto = 0;
-	obj->end_of_seq = 0;
+void bstream_rst() {
+
+	// reset
+	cnt_out |= BITSTR_ADV_RST;
+	*lwaxi_cnt_out = cnt_out;
+	cnt_out &= ~BITSTR_ADV_RST;
+	*lwaxi_cnt_out = cnt_out;
+
 }
 
-void bstream__loop_sto(bstream_obj *obj) {
-	obj->loop_sta = 0;
-	obj->loop_sto = 1;
-	obj->end_of_seq = 0;
+void bstream_start() {
+	// start
+	cnt_out |= BITSTR_ADV_START;
+	*lwaxi_cnt_out = cnt_out;
+	cnt_out &= ~BITSTR_ADV_START;
+	*lwaxi_cnt_out = cnt_out;
+}
+
+char bstream_check(bstream_obj *obj) {
+	if (obj->error_seq == SEQ_ERROR) {
+		return SEQ_ERROR;
+	} else
+		return SEQ_OK;
 }
 
 void bstream__end_of_seq(bstream_obj *obj) {
@@ -64,14 +75,73 @@ void bstream__end_of_seq(bstream_obj *obj) {
 	bstream__push(obj, 0 /*pattern*/, 0 /* all 1s*/, 0 /* all 0s*/, obj->loop_sta, obj->loop_sto, obj->end_of_seq, 0, 0);
 }
 
-void bstream__all_1s(bstream_obj *obj, unsigned long len) {
-	bstream__push(obj, 0 /*pattern*/, 1 /* all 1s*/, 0 /* all 0s*/, obj->loop_sta, obj->loop_sto, obj->end_of_seq, 0, (unsigned long long) len);
+void bstream__all_1s(bstream_obj *obj, char mode, unsigned long len) {
+	if (mode == LOOP_STA) {
+		obj->loop_sta = 1;
+		obj->loop_sto = 0;
+		obj->end_of_seq = 0;
+	}
+	if (mode == LOOP_STO) {
+		obj->loop_sta = 0;
+		obj->loop_sto = 1;
+		obj->end_of_seq = 0;
+	}
+	if (mode == NORMAL) {
+		obj->loop_sta = 0;
+		obj->loop_sto = 0;
+		obj->end_of_seq = 0;
+	}
+
+	if (len < 10) {
+		printf("\tERROR! The bitstream all-1s length should be at least 10.\n");
+		obj->error_seq = 1;
+	} else {
+		bstream__push(obj, 0 /*pattern*/, 1 /* all 1s*/, 0 /* all 0s*/, obj->loop_sta, obj->loop_sto, obj->end_of_seq, 0, (unsigned long long) len);
+	}
 }
 
-void bstream__all_0s(bstream_obj *obj, unsigned long len) {
-	bstream__push(obj, 0 /*pattern*/, 0 /* all 1s*/, 1 /* all 0s*/, obj->loop_sta, obj->loop_sto, obj->end_of_seq, 0, (unsigned long long) len);
+void bstream__all_0s(bstream_obj *obj, char mode, unsigned long len) {
+	if (mode == LOOP_STA) {
+		obj->loop_sta = 1;
+		obj->loop_sto = 0;
+		obj->end_of_seq = 0;
+	}
+	if (mode == LOOP_STO) {
+		obj->loop_sta = 0;
+		obj->loop_sto = 1;
+		obj->end_of_seq = 0;
+	}
+	if (mode == NORMAL) {
+		obj->loop_sta = 0;
+		obj->loop_sto = 0;
+		obj->end_of_seq = 0;
+	}
+
+	if (len < 10) {
+		printf("\tERROR! The bitstream all-0s length should be at least 10.\n");
+		obj->error_seq = 1;
+	} else {
+		bstream__push(obj, 0 /*pattern*/, 0 /* all 1s*/, 1 /* all 0s*/, obj->loop_sta, obj->loop_sto, obj->end_of_seq, 0, (unsigned long long) len);
+	}
 }
 
-void bstream__pattern(bstream_obj *obj, unsigned long long dat_msb, unsigned long long dat_lsb) {
+void bstream__pattern(bstream_obj *obj, char mode, unsigned long long dat_msb, unsigned long long dat_lsb) {
+	if (mode == LOOP_STA) {
+		obj->loop_sta = 1;
+		obj->loop_sto = 0;
+		obj->end_of_seq = 0;
+	}
+	if (mode == LOOP_STO) {
+		obj->loop_sta = 0;
+		obj->loop_sto = 1;
+		obj->end_of_seq = 0;
+	}
+	if (mode == NORMAL) {
+		obj->loop_sta = 0;
+		obj->loop_sto = 0;
+		obj->end_of_seq = 0;
+	}
+
 	bstream__push(obj, 1 /*pattern*/, 0 /* all 1s*/, 0 /* all 0s*/, obj->loop_sta, obj->loop_sto, obj->end_of_seq, dat_msb, dat_lsb);
 }
+

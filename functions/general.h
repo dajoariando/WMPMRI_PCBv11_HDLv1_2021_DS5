@@ -31,6 +31,10 @@
 #define ENABLE_MESSAGE	1
 #define DISABLE_MESSAGE 0
 
+// error
+#define SEQ_ERROR	1
+#define SEQ_OK		0
+
 #define ENABLE 1
 #define DISABLE 0
 

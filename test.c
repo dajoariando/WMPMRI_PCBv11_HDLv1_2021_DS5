@@ -18,7 +18,7 @@ unsigned int *lwaxi_bitstr_fifo_csr = NULL;   // bitstream fifo status address
 unsigned int *lwaxi_led = NULL;					// LED
 unsigned int *lwaxi_sw = NULL;					// switches
 unsigned int *lwaxi_button = NULL;				// button
-unsigned int *axi_ram_tx_en = NULL;
+unsigned int *axi_ram_tx_h1 = NULL;
 
 int main() {
 
@@ -34,33 +34,31 @@ int main() {
 	 Wait_PLL_To_Lock(lwaxi_cnt_in, PLL_SYS_lock_ofst);
 	 */
 
-	alt_write_word(lwaxi_led, 0xFF);
-	alt_write_word(lwaxi_led, 0x00);
+	// alt_write_word(lwaxi_led, 0xFF);
+	// alt_write_word(lwaxi_led, 0x00);
+	// reset
+	bstream_rst();
 
-	cnt_out |= BITSTR_ADV_RST;
-	*lwaxi_cnt_out = cnt_out;
-	cnt_out &= ~BITSTR_ADV_RST;
-	*lwaxi_cnt_out = cnt_out;
+	bstream_obj obj_gpio0_1;		// create the object (connected to the GPIO)
 
-	bstream_obj obj_gpio0_1;
-	bstream__init(&obj_gpio0_1, axi_ram_tx_en, 5);
+	bstream__init(&obj_gpio0_1, axi_ram_tx_h1, 0x03);   // initialize the object along with the SRAM address
 
-	bstream__all_1s(&obj_gpio0_1, 10);
-	bstream__all_0s(&obj_gpio0_1, 10);
-	bstream__all_1s(&obj_gpio0_1, 30);
+	bstream__all_1s(&obj_gpio0_1, NORMAL, 10);		// generate 10 cycles of 1s
+	bstream__all_0s(&obj_gpio0_1, NORMAL, 10);		// generate 10 cycles of 0s
+	bstream__all_1s(&obj_gpio0_1, NORMAL, 30);		// generate 30 cycles of 1s
 
-	bstream__loop_sta(&obj_gpio0_1);
-	bstream__pattern(&obj_gpio0_1, 0xAAAA, 0x0000);
+	bstream__pattern(&obj_gpio0_1, NORMAL, 0x0AA0, 0x0000);   // set the pattern 0xAAAA (120-bit)
+	bstream__pattern(&obj_gpio0_1, LOOP_STA, 0x0F00, 0x0000);
+	bstream__pattern(&obj_gpio0_1, NORMAL, 0x0FF0, 0x0000);   // set the pattern 0xF0F0 (120-bit)
+	bstream__pattern(&obj_gpio0_1, LOOP_STO, 0xAAAA, 0x0000);   // set the pattern 0xF0F0 (120-bit)
 
-	bstream__loop_sto(&obj_gpio0_1);
-	bstream__pattern(&obj_gpio0_1, 0xF0F0, 0x0000);
+	bstream__end_of_seq(&obj_gpio0_1);				// set end of the sequence
 
-	bstream__end_of_seq(&obj_gpio0_1);
-
-	cnt_out |= BITSTR_ADV_START;
-	*lwaxi_cnt_out = cnt_out;
-	cnt_out &= ~BITSTR_ADV_START;
-	*lwaxi_cnt_out = cnt_out;
+	if (bstream_check(&obj_gpio0_1) == SEQ_OK) {
+		bstream_start();
+	} else {
+		printf("\tERROR! Bitstream sequence has an error.\n");
+	}
 
 	leave();
 
