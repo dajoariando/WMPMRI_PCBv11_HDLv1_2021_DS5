@@ -7,20 +7,42 @@
 int fd_dev_mem = 0;   // physical memory file descriptor
 unsigned int cnt_out = 0;
 
-// memory mapped peripherals
+// memory mapped peripherals. Also add extern definition at glob_vars.h
 void *lwaxi_base = NULL;					// the LWAXI bus mm base address
 void *axi_base = NULL;					// the AXI bus mm base address
 void *lwaxi_sys_pll = NULL;						// system pll reconfig
 unsigned int *lwaxi_cnt_out = NULL;			// control output to FPGA
 unsigned int *lwaxi_cnt_in = NULL;			// control input from FPGA
-unsigned int *axi_bitstr_fifo = NULL;	// bitstream fifo data address
-unsigned int *lwaxi_bitstr_fifo_csr = NULL;   // bitstream fifo status address
 unsigned int *lwaxi_led = NULL;					// LED
 unsigned int *lwaxi_sw = NULL;					// switches
 unsigned int *lwaxi_button = NULL;				// button
+// memory map peripherals for bitstream codes. Also connect the bitstream object and ram in function bstream__init_all_sram() inside bstream.c
 unsigned int *axi_ram_tx_h1 = NULL;
+unsigned int *axi_ram_tx_l1 = NULL;
+unsigned int *axi_ram_tx_aux = NULL;
+unsigned int *axi_ram_tx_h2 = NULL;
+unsigned int *axi_ram_tx_l2 = NULL;
+unsigned int *axi_ram_tx_charge = NULL;
+unsigned int *axi_ram_tx_damp = NULL;
+unsigned int *axi_ram_tx_dump = NULL;
 
-int main() {
+// bitstream objects
+bstream_obj bstream_objs[BSTREAM_COUNT];
+
+int main(int argc, char * argv[]) {
+
+	double dtcl = atof(argv[1]);
+	double ind_pchg_us = atof(argv[2]);
+	double dump_len_us = atof(argv[3]);
+	unsigned int en_pchrg = atoi(argv[4]);
+	unsigned int repetition = atoi(argv[5]);
+	float RFCLK = atof(argv[6]);
+
+	double max_plen = 500;   // set the maximum plen
+	if (ind_pchg_us > max_plen) {
+		printf("\t ERROR! Pulse is too long.\n");
+		return 0;
+	}
 
 	init();
 
@@ -36,29 +58,22 @@ int main() {
 
 	// alt_write_word(lwaxi_led, 0xFF);
 	// alt_write_word(lwaxi_led, 0x00);
+	// standard parameters
+	float CLK_50 = 50.00;
+	//float RFCLK = 1.00;
+
 	// reset
 	bstream_rst();
 
-	bstream_obj obj_gpio0_1;		// create the object (connected to the GPIO)
+	// test precharging and dump
+	// double pchg_us = 1000;
+	// bstream__prechrg_n_dump(CLK_50, pchg_us, plen_us, tail_us, dump_dly_us, dump_len_us, en_pchrg);
 
-	bstream__init(&obj_gpio0_1, axi_ram_tx_h1, 0x03);   // initialize the object along with the SRAM address
+	// test nulling
+	// bstream__null_everything();
 
-	bstream__all_1s(&obj_gpio0_1, NORMAL, 10);		// generate 10 cycles of 1s
-	bstream__all_0s(&obj_gpio0_1, NORMAL, 10);		// generate 10 cycles of 0s
-	bstream__all_1s(&obj_gpio0_1, NORMAL, 30);		// generate 30 cycles of 1s
-
-	bstream__pattern(&obj_gpio0_1, NORMAL, 0x0AA0, 0x0000);   // set the pattern 0xAAAA (120-bit)
-	bstream__pattern(&obj_gpio0_1, LOOP_STA, 0x0F00, 0x0000);
-	bstream__pattern(&obj_gpio0_1, NORMAL, 0x0FF0, 0x0000);   // set the pattern 0xF0F0 (120-bit)
-	bstream__pattern(&obj_gpio0_1, LOOP_STO, 0xAAAA, 0x0000);   // set the pattern 0xF0F0 (120-bit)
-
-	bstream__end_of_seq(&obj_gpio0_1);				// set end of the sequence
-
-	if (bstream_check(&obj_gpio0_1) == SEQ_OK) {
-		bstream_start();
-	} else {
-		printf("\tERROR! Bitstream sequence has an error.\n");
-	}
+	// test rf output
+	bstream__prechrg_n_rf_n_dump(CLK_50, RFCLK, dtcl, ind_pchg_us, dump_len_us, en_pchrg, repetition);
 
 	leave();
 

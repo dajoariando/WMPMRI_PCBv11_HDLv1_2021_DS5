@@ -52,14 +52,19 @@ void mmap_fpga_peripherals() {
 	lwaxi_cnt_out = lwaxi_base + CNT_OUT_BASE;
 	lwaxi_cnt_in = lwaxi_base + CNT_IN_BASE;
 	lwaxi_sys_pll = lwaxi_base + SYS_PLL_RECONFIG_BASE;
-	lwaxi_bitstr_fifo_csr = lwaxi_base + BITSTR_FIFO_IN_CSR_BASE;
 	lwaxi_led = lwaxi_base + LED_PIO_BASE;
 	lwaxi_sw = lwaxi_base + DIPSW_PIO_BASE;
 	lwaxi_button = lwaxi_base + BUTTON_PIO_BASE;
 
 	// axi master slave devices
-	axi_bitstr_fifo = axi_base + BITSTR_FIFO_IN_BASE;
 	axi_ram_tx_h1 = axi_base + TX_H1_BASE;
+	axi_ram_tx_l1 = axi_base + TX_L1_BASE;
+	axi_ram_tx_h2 = axi_base + TX_H2_BASE;
+	axi_ram_tx_l2 = axi_base + TX_L2_BASE;
+	axi_ram_tx_charge = axi_base + TX_CHRG_BASE;
+	axi_ram_tx_damp = axi_base + TX_DAMP_BASE;
+	axi_ram_tx_dump = axi_base + TX_DUMP_BASE;
+	axi_ram_tx_aux = axi_base + TX_AUX_BASE;
 
 }
 
@@ -100,6 +105,7 @@ void init() {
 	open_physical_memory_device();
 	mmap_peripherals();
 	init_default_system_param();
+	bstream__init_all_sram();
 }
 
 void leave() {

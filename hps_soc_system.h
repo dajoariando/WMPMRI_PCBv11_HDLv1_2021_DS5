@@ -43,35 +43,6 @@
 #define SYS_PLL_RECONFIG_END 0xff
 
 /*
- * Macros for device 'bitstr_fifo_in_csr', class 'altera_avalon_fifo'
- * The macros are prefixed with 'BITSTR_FIFO_IN_CSR_'.
- * The prefix is the slave descriptor.
- */
-#define BITSTR_FIFO_IN_CSR_COMPONENT_TYPE altera_avalon_fifo
-#define BITSTR_FIFO_IN_CSR_COMPONENT_NAME bitstr_fifo
-#define BITSTR_FIFO_IN_CSR_BASE 0x100
-#define BITSTR_FIFO_IN_CSR_SPAN 32
-#define BITSTR_FIFO_IN_CSR_END 0x11f
-#define BITSTR_FIFO_IN_CSR_AVALONMM_AVALONMM_DATA_WIDTH 32
-#define BITSTR_FIFO_IN_CSR_AVALONMM_AVALONST_DATA_WIDTH 32
-#define BITSTR_FIFO_IN_CSR_BITS_PER_SYMBOL 32
-#define BITSTR_FIFO_IN_CSR_CHANNEL_WIDTH 0
-#define BITSTR_FIFO_IN_CSR_ERROR_WIDTH 0
-#define BITSTR_FIFO_IN_CSR_FIFO_DEPTH 8192
-#define BITSTR_FIFO_IN_CSR_SINGLE_CLOCK_MODE 0
-#define BITSTR_FIFO_IN_CSR_SYMBOLS_PER_BEAT 1
-#define BITSTR_FIFO_IN_CSR_USE_AVALONMM_READ_SLAVE 0
-#define BITSTR_FIFO_IN_CSR_USE_AVALONMM_WRITE_SLAVE 1
-#define BITSTR_FIFO_IN_CSR_USE_AVALONST_SINK 0
-#define BITSTR_FIFO_IN_CSR_USE_AVALONST_SOURCE 1
-#define BITSTR_FIFO_IN_CSR_USE_BACKPRESSURE 1
-#define BITSTR_FIFO_IN_CSR_USE_IRQ 0
-#define BITSTR_FIFO_IN_CSR_USE_PACKET 0
-#define BITSTR_FIFO_IN_CSR_USE_READ_CONTROL 0
-#define BITSTR_FIFO_IN_CSR_USE_REGISTER 0
-#define BITSTR_FIFO_IN_CSR_USE_WRITE_CONTROL 1
-
-/*
  * Macros for device 'cnt_in', class 'altera_avalon_pio'
  * The macros are prefixed with 'CNT_IN_'.
  * The prefix is the slave descriptor.
@@ -186,33 +157,15 @@
 #define TX_H1_END 0x6fff
 
 /*
- * Macros for device 'bitstr_fifo_in', class 'altera_avalon_fifo'
- * The macros are prefixed with 'BITSTR_FIFO_IN_'.
+ * Macros for device 'tx_aux', class 'bstream'
+ * The macros are prefixed with 'TX_AUX_'.
  * The prefix is the slave descriptor.
  */
-#define BITSTR_FIFO_IN_COMPONENT_TYPE altera_avalon_fifo
-#define BITSTR_FIFO_IN_COMPONENT_NAME bitstr_fifo
-#define BITSTR_FIFO_IN_BASE 0x7000
-#define BITSTR_FIFO_IN_SPAN 8
-#define BITSTR_FIFO_IN_END 0x7007
-#define BITSTR_FIFO_IN_AVALONMM_AVALONMM_DATA_WIDTH 32
-#define BITSTR_FIFO_IN_AVALONMM_AVALONST_DATA_WIDTH 32
-#define BITSTR_FIFO_IN_BITS_PER_SYMBOL 32
-#define BITSTR_FIFO_IN_CHANNEL_WIDTH 0
-#define BITSTR_FIFO_IN_ERROR_WIDTH 0
-#define BITSTR_FIFO_IN_FIFO_DEPTH 8192
-#define BITSTR_FIFO_IN_SINGLE_CLOCK_MODE 0
-#define BITSTR_FIFO_IN_SYMBOLS_PER_BEAT 1
-#define BITSTR_FIFO_IN_USE_AVALONMM_READ_SLAVE 0
-#define BITSTR_FIFO_IN_USE_AVALONMM_WRITE_SLAVE 1
-#define BITSTR_FIFO_IN_USE_AVALONST_SINK 0
-#define BITSTR_FIFO_IN_USE_AVALONST_SOURCE 1
-#define BITSTR_FIFO_IN_USE_BACKPRESSURE 1
-#define BITSTR_FIFO_IN_USE_IRQ 0
-#define BITSTR_FIFO_IN_USE_PACKET 0
-#define BITSTR_FIFO_IN_USE_READ_CONTROL 0
-#define BITSTR_FIFO_IN_USE_REGISTER 0
-#define BITSTR_FIFO_IN_USE_WRITE_CONTROL 1
+#define TX_AUX_COMPONENT_TYPE bstream
+#define TX_AUX_COMPONENT_NAME tx_aux
+#define TX_AUX_BASE 0x7000
+#define TX_AUX_SPAN 4096
+#define TX_AUX_END 0x7fff
 
 /*
  * Macros for device 'led_pio', class 'altera_avalon_pio'

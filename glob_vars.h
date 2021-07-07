@@ -21,12 +21,17 @@ extern void *axi_base;					// the AXI bus mm base address
 extern void *lwaxi_sys_pll;						// system pll reconfig
 extern unsigned int *lwaxi_cnt_out;			// control output to FPGA
 extern unsigned int *lwaxi_cnt_in;			// control input from FPGA
-extern unsigned int *axi_bitstr_fifo;	// bitstream fifo data address
-extern unsigned int *lwaxi_bitstr_fifo_csr;   // bitstream fifo status address
 extern unsigned int *lwaxi_led;					// LED
 extern unsigned int *lwaxi_sw;					// switches
 extern unsigned int *lwaxi_button;				// button
 extern unsigned int *axi_ram_tx_h1;				// ram for the tx_h1
+extern unsigned int *axi_ram_tx_l1;				// ram for the tx_l1
+extern unsigned int *axi_ram_tx_aux;			// auxiliary ram for the tx
+extern unsigned int *axi_ram_tx_h2;				// ram for the tx_h2
+extern unsigned int *axi_ram_tx_l2;				// ram for the tx_l2
+extern unsigned int *axi_ram_tx_charge;			// ram for the tx_charge
+extern unsigned int *axi_ram_tx_damp;			// ram for the tx_damp
+extern unsigned int *axi_ram_tx_dump;			// ram for the tx_dump
 
 // additional parameters
 // size_t h2f_lw_axi_master_span = ALT_LWFPGASLVS_UB_ADDR - ALT_LWFPGASLVS_LB_ADDR + 1;
