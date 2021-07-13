@@ -6,6 +6,7 @@
 C_SRCS += \
 ../functions/bstream.c \
 ../functions/common_functions.c \
+../functions/dac_ad5722r_driver.c \
 ../functions/pll_calculator.c \
 ../functions/pll_param_generator.c \
 ../functions/reconfig_functions.c 
@@ -13,6 +14,7 @@ C_SRCS += \
 OBJS += \
 ./functions/bstream.o \
 ./functions/common_functions.o \
+./functions/dac_ad5722r_driver.o \
 ./functions/pll_calculator.o \
 ./functions/pll_param_generator.o \
 ./functions/reconfig_functions.o 
@@ -20,6 +22,7 @@ OBJS += \
 C_DEPS += \
 ./functions/bstream.d \
 ./functions/common_functions.d \
+./functions/dac_ad5722r_driver.d \
 ./functions/pll_calculator.d \
 ./functions/pll_param_generator.d \
 ./functions/reconfig_functions.d 

@@ -55,6 +55,7 @@ void mmap_fpga_peripherals() {
 	lwaxi_led = lwaxi_base + LED_PIO_BASE;
 	lwaxi_sw = lwaxi_base + DIPSW_PIO_BASE;
 	lwaxi_button = lwaxi_base + BUTTON_PIO_BASE;
+	lwaxi_rx_dac = lwaxi_base + RX_DAC_BASE;		// RX DAC for coil tuning
 
 	// axi master slave devices
 	axi_ram_tx_h1 = axi_base + TX_H1_BASE;
@@ -65,6 +66,8 @@ void mmap_fpga_peripherals() {
 	axi_ram_tx_damp = axi_base + TX_DAMP_BASE;
 	axi_ram_tx_dump = axi_base + TX_DUMP_BASE;
 	axi_ram_tx_aux = axi_base + TX_AUX_BASE;
+	axi_ram_rx_inc_damp = axi_base + RX_INC_DAMP_BASE;
+	axi_ram_rx_in_short = axi_base + RX_IN_SHORT_BASE;
 
 }
 

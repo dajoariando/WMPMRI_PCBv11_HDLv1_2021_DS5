@@ -1,4 +1,6 @@
 // offsets for output control signal
+#define RXDAC_CLRn_ofst					(8)
+#define RXDAC_LDACn_ofst				(7)
 #define BITSTR_ADV_RST_ofst				(6)
 #define	BITSTR_ADV_START_ofst			(5)
 #define SYS_PLL_RST_ofst				(4)
@@ -8,6 +10,8 @@
 #define BITSTR_FIFO_RST_ofst			(0)
 
 // Output control signal to FPGA
+#define RXDAC_CLRn					(1<<RXDAC_CLRn_ofst)
+#define RXDAC_LDACn					(1<<RXDAC_LDACn_ofst)
 #define BITSTR_ADV_RST				(1<<BITSTR_ADV_RST_ofst)
 #define	BITSTR_ADV_START			(1<<BITSTR_ADV_START_ofst)
 #define SYS_PLL_RST					(1<<SYS_PLL_RST_ofst_ofst)

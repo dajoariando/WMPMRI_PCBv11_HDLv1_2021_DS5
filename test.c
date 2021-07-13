@@ -11,20 +11,24 @@ unsigned int cnt_out = 0;
 void *lwaxi_base = NULL;					// the LWAXI bus mm base address
 void *axi_base = NULL;					// the AXI bus mm base address
 void *lwaxi_sys_pll = NULL;						// system pll reconfig
-unsigned int *lwaxi_cnt_out = NULL;			// control output to FPGA
-unsigned int *lwaxi_cnt_in = NULL;			// control input from FPGA
-unsigned int *lwaxi_led = NULL;					// LED
-unsigned int *lwaxi_sw = NULL;					// switches
-unsigned int *lwaxi_button = NULL;				// button
+volatile unsigned int *lwaxi_cnt_out = NULL;		// control output to FPGA
+volatile unsigned int *lwaxi_cnt_in = NULL;			// control input from FPGA
+volatile unsigned int *lwaxi_led = NULL;					// LED
+volatile unsigned int *lwaxi_sw = NULL;					// switches
+volatile unsigned int *lwaxi_button = NULL;				// button
+volatile unsigned int *lwaxi_rx_dac = NULL;			// RX DAC for coil tuning
+
 // memory map peripherals for bitstream codes. Also connect the bitstream object and ram in function bstream__init_all_sram() inside bstream.c
-unsigned int *axi_ram_tx_h1 = NULL;
-unsigned int *axi_ram_tx_l1 = NULL;
-unsigned int *axi_ram_tx_aux = NULL;
-unsigned int *axi_ram_tx_h2 = NULL;
-unsigned int *axi_ram_tx_l2 = NULL;
-unsigned int *axi_ram_tx_charge = NULL;
-unsigned int *axi_ram_tx_damp = NULL;
-unsigned int *axi_ram_tx_dump = NULL;
+volatile unsigned int *axi_ram_tx_h1 = NULL;
+volatile unsigned int *axi_ram_tx_l1 = NULL;
+volatile unsigned int *axi_ram_tx_aux = NULL;
+volatile unsigned int *axi_ram_tx_h2 = NULL;
+volatile unsigned int *axi_ram_tx_l2 = NULL;
+volatile unsigned int *axi_ram_tx_charge = NULL;
+volatile unsigned int *axi_ram_tx_damp = NULL;
+volatile unsigned int *axi_ram_tx_dump = NULL;
+volatile unsigned int *axi_ram_rx_inc_damp = NULL;
+volatile unsigned int *axi_ram_rx_in_short = NULL;
 
 // bitstream objects
 bstream_obj bstream_objs[BSTREAM_COUNT];
@@ -70,10 +74,16 @@ int main(int argc, char * argv[]) {
 	// bstream__prechrg_n_dump(CLK_50, pchg_us, plen_us, tail_us, dump_dly_us, dump_len_us, en_pchrg);
 
 	// test nulling
-	// bstream__null_everything();
+	bstream__null_everything();
 
 	// test rf output
-	bstream__prechrg_n_rf_n_dump(CLK_50, RFCLK, dtcl, ind_pchg_us, dump_len_us, en_pchrg, repetition);
+	// bstream__prechrg_n_rf_n_dump(CLK_50, RFCLK, dtcl, ind_pchg_us, dump_len_us, en_pchrg, repetition);
+
+	// slow toggle output
+	bstream__toggle(&bstream_objs[rx_in_short], CLK_50, 3000000, 1000);
+
+	init_dac_ad5722r(lwaxi_rx_dac);
+	wr_dac_ad5722r(lwaxi_rx_dac, DAC_B, 1.57, ENABLE_MESSAGE);
 
 	leave();
 

@@ -36,5 +36,7 @@
 #include "hps_soc_system.h"
 #include "hps_functions.h"
 #include "functions/bstream.h"
+#include "functions/avalon_spi.h"
+#include "functions/dac_ad5722r_driver.h"
 
 #endif /* HPS_LINUX_H_ */

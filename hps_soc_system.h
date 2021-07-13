@@ -43,6 +43,35 @@
 #define SYS_PLL_RECONFIG_END 0xff
 
 /*
+ * Macros for device 'rx_dac', class 'altera_avalon_spi'
+ * The macros are prefixed with 'RX_DAC_'.
+ * The prefix is the slave descriptor.
+ */
+#define RX_DAC_COMPONENT_TYPE altera_avalon_spi
+#define RX_DAC_COMPONENT_NAME rx_dac
+#define RX_DAC_BASE 0x100
+#define RX_DAC_SPAN 32
+#define RX_DAC_END 0x11f
+#define RX_DAC_IRQ 3
+#define RX_DAC_CLOCKMULT 1
+#define RX_DAC_CLOCKPHASE 0
+#define RX_DAC_CLOCKPOLARITY 1
+#define RX_DAC_CLOCKUNITS "Hz"
+#define RX_DAC_DATABITS 24
+#define RX_DAC_DATAWIDTH 32
+#define RX_DAC_DELAYMULT "1.0E-9"
+#define RX_DAC_DELAYUNITS "ns"
+#define RX_DAC_EXTRADELAY 0
+#define RX_DAC_INSERT_SYNC 0
+#define RX_DAC_ISMASTER 1
+#define RX_DAC_LSBFIRST 0
+#define RX_DAC_NUMSLAVES 1
+#define RX_DAC_PREFIX "spi_"
+#define RX_DAC_SYNC_REG_DEPTH 2
+#define RX_DAC_TARGETCLOCK 128000
+#define RX_DAC_TARGETSSDELAY "0.0"
+
+/*
  * Macros for device 'cnt_in', class 'altera_avalon_pio'
  * The macros are prefixed with 'CNT_IN_'.
  * The prefix is the slave descriptor.
@@ -166,6 +195,28 @@
 #define TX_AUX_BASE 0x7000
 #define TX_AUX_SPAN 4096
 #define TX_AUX_END 0x7fff
+
+/*
+ * Macros for device 'rx_in_short', class 'bstream'
+ * The macros are prefixed with 'RX_IN_SHORT_'.
+ * The prefix is the slave descriptor.
+ */
+#define RX_IN_SHORT_COMPONENT_TYPE bstream
+#define RX_IN_SHORT_COMPONENT_NAME rx_in_short
+#define RX_IN_SHORT_BASE 0x8000
+#define RX_IN_SHORT_SPAN 4096
+#define RX_IN_SHORT_END 0x8fff
+
+/*
+ * Macros for device 'rx_inc_damp', class 'bstream'
+ * The macros are prefixed with 'RX_INC_DAMP_'.
+ * The prefix is the slave descriptor.
+ */
+#define RX_INC_DAMP_COMPONENT_TYPE bstream
+#define RX_INC_DAMP_COMPONENT_NAME rx_inc_damp
+#define RX_INC_DAMP_BASE 0x9000
+#define RX_INC_DAMP_SPAN 4096
+#define RX_INC_DAMP_END 0x9fff
 
 /*
  * Macros for device 'led_pio', class 'altera_avalon_pio'

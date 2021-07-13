@@ -15,7 +15,7 @@
 #define PATTERN_WIDTH 120 // the pattern width is set in the Quartus, check if it match
 
 typedef struct bstream_struct {
-	unsigned int * sram_addr;	// the sram address
+	volatile unsigned int * sram_addr;   // the sram address
 	unsigned int curr_ofst;		// the sram current offset
 	char loop_sta;				// the loop start flag
 	char loop_sto;				// the loop stop flag
@@ -27,7 +27,7 @@ typedef struct bstream_struct {
 
 // define the variables for the bitstream
 enum bstream_gpio {
-	tx_h1 = 0, tx_l1, tx_h2, tx_l2, tx_charge, tx_damp, tx_dump, tx_aux, BSTREAM_COUNT   // BSTREAM_COUNT is a dummy variable to mark the end of the enum
+	tx_h1 = 0, tx_l1, tx_h2, tx_l2, tx_charge, tx_damp, tx_dump, tx_aux, rx_inc_damp, rx_in_short, BSTREAM_COUNT   // BSTREAM_COUNT is a dummy variable to mark the end of the enum
 };
 extern bstream_obj bstream_objs[BSTREAM_COUNT];
 
@@ -54,7 +54,7 @@ void bstream__pattern(bstream_obj *obj, char mode, unsigned long long dat_msb, u
 
 void bstream__null_output(bstream_obj *obj);
 
-void bstream__toggle(bstream_obj *obj, void *sram_addr, float freq_MHz, float pulse_us, unsigned long repetition);
+void bstream__toggle(bstream_obj *obj, float freq_MHz, float pulse_us, unsigned long repetition);
 
 // initialized-object functions
 void bstream__null_everything();   // null all outputs of the registered bstream

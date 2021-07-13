@@ -19,19 +19,23 @@ extern unsigned int cnt_out;
 extern void *lwaxi_base;					// the LWAXI bus mm base address
 extern void *axi_base;					// the AXI bus mm base address
 extern void *lwaxi_sys_pll;						// system pll reconfig
-extern unsigned int *lwaxi_cnt_out;			// control output to FPGA
-extern unsigned int *lwaxi_cnt_in;			// control input from FPGA
-extern unsigned int *lwaxi_led;					// LED
-extern unsigned int *lwaxi_sw;					// switches
-extern unsigned int *lwaxi_button;				// button
-extern unsigned int *axi_ram_tx_h1;				// ram for the tx_h1
-extern unsigned int *axi_ram_tx_l1;				// ram for the tx_l1
-extern unsigned int *axi_ram_tx_aux;			// auxiliary ram for the tx
-extern unsigned int *axi_ram_tx_h2;				// ram for the tx_h2
-extern unsigned int *axi_ram_tx_l2;				// ram for the tx_l2
-extern unsigned int *axi_ram_tx_charge;			// ram for the tx_charge
-extern unsigned int *axi_ram_tx_damp;			// ram for the tx_damp
-extern unsigned int *axi_ram_tx_dump;			// ram for the tx_dump
+extern volatile unsigned int *lwaxi_cnt_out;		// control output to FPGA
+extern volatile unsigned int *lwaxi_cnt_in;			// control input from FPGA
+extern volatile unsigned int *lwaxi_led;					// LED
+extern volatile unsigned int *lwaxi_sw;					// switches
+extern volatile unsigned int *lwaxi_button;				// button
+extern volatile unsigned int *lwaxi_rx_dac;			// RX DAC for coil tuning
+
+extern volatile unsigned int *axi_ram_tx_h1;				// ram for the tx_h1
+extern volatile unsigned int *axi_ram_tx_l1;				// ram for the tx_l1
+extern volatile unsigned int *axi_ram_tx_aux;		// auxiliary ram for the tx
+extern volatile unsigned int *axi_ram_tx_h2;				// ram for the tx_h2
+extern volatile unsigned int *axi_ram_tx_l2;				// ram for the tx_l2
+extern volatile unsigned int *axi_ram_tx_charge;		// ram for the tx_charge
+extern volatile unsigned int *axi_ram_tx_damp;			// ram for the tx_damp
+extern volatile unsigned int *axi_ram_tx_dump;			// ram for the tx_dump
+extern volatile unsigned int *axi_ram_rx_inc_damp;	// ram for the rx_inc_damp
+extern volatile unsigned int *axi_ram_rx_in_short;	// ram for the rx_in_short
 
 // additional parameters
 // size_t h2f_lw_axi_master_span = ALT_LWFPGASLVS_UB_ADDR - ALT_LWFPGASLVS_LB_ADDR + 1;

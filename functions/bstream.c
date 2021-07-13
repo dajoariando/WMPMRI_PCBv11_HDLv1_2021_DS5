@@ -37,6 +37,8 @@ void bstream__init_all_sram() {
 	bstream_objs[tx_dump].sram_addr = axi_ram_tx_dump;
 	bstream_objs[tx_charge].sram_addr = axi_ram_tx_charge;
 	bstream_objs[tx_aux].sram_addr = axi_ram_tx_aux;
+	bstream_objs[rx_inc_damp].sram_addr = axi_ram_rx_inc_damp;
+	bstream_objs[rx_in_short].sram_addr = axi_ram_rx_in_short;
 
 }
 
@@ -198,11 +200,13 @@ void bstream__null_output(bstream_obj *obj) {
 	bstream__end_of_seq(obj);
 }
 
-void bstream__toggle(bstream_obj *obj, void *sram_addr, float freq_MHz, float ind_pchg_us, unsigned long repetition) {
+void bstream__toggle(bstream_obj *obj, float freq_MHz, float pulse_us, unsigned long repetition) {
 	bstream__init(obj, repetition, freq_MHz);
-	bstream__all_1s_us(obj, LOOP_STA, ind_pchg_us);
-	bstream__all_0s_us(obj, LOOP_STO, ind_pchg_us);
+	bstream__all_1s_us(obj, LOOP_STA, pulse_us);
+	bstream__all_0s_us(obj, LOOP_STO, pulse_us);
 	bstream__end_of_seq(obj);
+
+	bstream_start();
 }
 
 void bstream__null_everything() {

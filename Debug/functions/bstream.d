@@ -10,7 +10,10 @@ functions/bstream.o: ../functions/bstream.c ../functions/bstream.h \
  ../functions/../functions/reconfig_functions.h \
  ../functions/../functions/pll_param_generator.h \
  ../functions/../hps_soc_system.h ../functions/../hps_functions.h \
- ../functions/../functions/bstream.h ../functions/../glob_vars.h
+ ../functions/../functions/bstream.h \
+ ../functions/../functions/avalon_spi.h \
+ ../functions/../functions/dac_ad5722r_driver.h \
+ ../functions/../glob_vars.h
 
 ../functions/bstream.h:
 
@@ -39,5 +42,9 @@ C:\intelFPGA\17.1\embedded\ip\altera\hps\altera_hps\hwlib\include\soc_cv_av/soca
 ../functions/../hps_functions.h:
 
 ../functions/../functions/bstream.h:
+
+../functions/../functions/avalon_spi.h:
+
+../functions/../functions/dac_ad5722r_driver.h:
 
 ../functions/../glob_vars.h:
