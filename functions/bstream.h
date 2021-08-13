@@ -15,14 +15,14 @@
 #define PATTERN_WIDTH 120 // the pattern width is set in the Quartus, check if it match
 
 typedef struct bstream_struct {
-	volatile unsigned int * sram_addr;   // the sram address
-	unsigned int curr_ofst;		// the sram current offset
-	char loop_sta;				// the loop start flag
-	char loop_sto;				// the loop stop flag
-	char end_of_seq;			// the end of sequence flag
-	unsigned long repetition;	// the number of repetition
-	float freq_MHz;					// frequency
-	char error_seq;				// the error flag
+		volatile unsigned int * sram_addr;   // the sram address
+		unsigned int curr_ofst;		// the sram current offset
+		char loop_sta;				// the loop start flag
+		char loop_sto;				// the loop stop flag
+		char end_of_seq;			// the end of sequence flag
+		unsigned long repetition;	// the number of repetition
+		float freq_MHz;					// frequency
+		char error_seq;				// the error flag
 } bstream_obj;
 
 // define the variables for the bitstream
@@ -59,6 +59,6 @@ void bstream__toggle(bstream_obj *obj, float freq_MHz, float pulse_us, unsigned 
 // initialized-object functions
 void bstream__null_everything();   // null all outputs of the registered bstream
 void bstream__prechrg_n_dump(float clk_MHz, double bstrap_pchg_us, double ind_pchg_us, double tail_us, double dump_dly_us, double dump_len_us, unsigned char en_pchrg);   // precharge the circuit and dump
-void bstream__prechrg_n_rf_n_dump(float clk_MHz, float RFclk_MHz, double dtcl, double ind_pchg_us, double dump_len_us, unsigned char en_pchrg, unsigned int repetition);
+void bstream__prechrg_n_rf_n_dump(char mode, float clk_MHz, float RFclk_MHz, double dtcl, double ind_pchg_us, double tx_coil_pchg_us, double dump_len_us, unsigned char en_pchrg, unsigned int repetition);
 
 #endif /* FUNCTIONS_BSTREAM_H_ */

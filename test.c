@@ -35,12 +35,18 @@ bstream_obj bstream_objs[BSTREAM_COUNT];
 
 int main(int argc, char * argv[]) {
 
-	double dtcl = atof(argv[1]);
-	double ind_pchg_us = atof(argv[2]);
-	double dump_len_us = atof(argv[3]);
-	unsigned int en_pchrg = atoi(argv[4]);
-	unsigned int repetition = atoi(argv[5]);
-	float RFCLK = atof(argv[6]);
+	char RF_mode = atoi(argv[1]);
+	double dtcl = atof(argv[2]);
+	double ind_pchg_us = atof(argv[3]);
+	double plen_us = atof(argv[4]);
+	double tail_us = atof(argv[5]);
+	double dump_dly_us = atof(argv[6]);
+	double dump_len_us = atof(argv[7]);
+	unsigned int en_pchrg = atoi(argv[8]);
+	unsigned int repetition = atoi(argv[9]);
+	float RFCLK = atof(argv[10]);
+	float vvarac = atof(argv[11]);
+	double tx_coil_pchg_us = atof(argv[12]);
 
 	double max_plen = 500;   // set the maximum plen
 	if (ind_pchg_us > max_plen) {
@@ -69,21 +75,21 @@ int main(int argc, char * argv[]) {
 	// reset
 	bstream_rst();
 
-	// test precharging and dump
-	// double pchg_us = 1000;
-	// bstream__prechrg_n_dump(CLK_50, pchg_us, plen_us, tail_us, dump_dly_us, dump_len_us, en_pchrg);
-
 	// test nulling
 	bstream__null_everything();
 
+	// test precharging and dump
+	// double bstrap_pchg_us = 1000;
+	// bstream__prechrg_n_dump(CLK_50, bstrap_pchg_us, ind_pchg_us, tail_us, dump_dly_us, dump_len_us, en_pchrg);
+
 	// test rf output
-	// bstream__prechrg_n_rf_n_dump(CLK_50, RFCLK, dtcl, ind_pchg_us, dump_len_us, en_pchrg, repetition);
+	bstream__prechrg_n_rf_n_dump(RF_mode, CLK_50, RFCLK, dtcl, ind_pchg_us, tx_coil_pchg_us, dump_len_us, en_pchrg, repetition);
 
 	// slow toggle output
-	bstream__toggle(&bstream_objs[rx_in_short], CLK_50, 3000000, 1000);
+	// bstream__toggle(&bstream_objs[tx_l2], CLK_50, 3000000, 1000);
 
-	init_dac_ad5722r(lwaxi_rx_dac);
-	wr_dac_ad5722r(lwaxi_rx_dac, DAC_B, 1.57, ENABLE_MESSAGE);
+	// init_dac_ad5722r(lwaxi_rx_dac);
+	// wr_dac_ad5722r(lwaxi_rx_dac, DAC_B, vvarac, ENABLE_MESSAGE);
 
 	leave();
 
