@@ -60,5 +60,6 @@ void bstream__toggle(bstream_obj *obj, float freq_MHz, float pulse_us, unsigned 
 void bstream__null_everything();   // null all outputs of the registered bstream
 void bstream__prechrg_n_dump(float clk_MHz, double bstrap_pchg_us, double ind_pchg_us, double tail_us, double dump_dly_us, double dump_len_us, unsigned char en_pchrg);   // precharge the circuit and dump
 void bstream__prechrg_n_rf_n_dump(char mode, float clk_MHz, float RFclk_MHz, double dtcl, double ind_pchg_us, double tx_coil_pchg_us, double dump_len_us, unsigned char en_pchrg, unsigned int repetition);
+void bstream__prechrg_n_rf_n_dump_180(/*char mode,*/float clk_MHz, float RFclk_MHz, double dtcl, double ind_pchg_us, double tx_coil_pchg_us, double dump_len_us, unsigned char en_pchrg, unsigned int repetition, unsigned int dump_repetition);
 
 #endif /* FUNCTIONS_BSTREAM_H_ */

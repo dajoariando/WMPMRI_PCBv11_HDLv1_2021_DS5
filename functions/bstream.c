@@ -282,6 +282,251 @@ void bstream__prechrg_n_dump(float clk_MHz, double bstrap_pchg_us, double ind_pc
 	bstream_start();
 }
 
+void bstream__prechrg_n_rf_n_dump_180(/*char mode, */float clk_MHz, float RFclk_MHz, double dtcl, double ind_pchg_us, double tx_coil_pchg_us, double dump_len_us, unsigned char en_pchrg, unsigned int repetition, unsigned int dump_repetition) {
+	// RF output mode (char mode):
+	// 0x01: same duty cycle for Hi1/Lo2 (the same goes for Hi2/Lo1 pair)
+	// 0x02: Hi1 duty cycle is higher than Lo2 (the same goes for Hi2/Lo1 pair)
+	// 0x03: Hi1 duty cycle is lower than Lo2 (the same goes for Hi2/Lo1 pair)
+	char mode = 0x01;   // only mode 1 works HERE
+
+	// init all the bitstream
+	bstream__init(&bstream_objs[tx_aux], repetition, clk_MHz);
+	bstream__init(&bstream_objs[tx_h1], repetition, clk_MHz);
+	bstream__init(&bstream_objs[tx_h2], repetition, clk_MHz);
+	bstream__init(&bstream_objs[tx_l1], repetition, clk_MHz);
+	bstream__init(&bstream_objs[tx_l2], repetition, clk_MHz);
+	bstream__init(&bstream_objs[tx_damp], repetition, clk_MHz);
+	bstream__init(&bstream_objs[tx_dump], repetition, clk_MHz);
+	bstream__init(&bstream_objs[tx_charge], repetition, clk_MHz);
+
+	// precharge the bootstrap
+	double bstrap_pchg_us = 1000;   // precharge the bootstrap for 1ms
+	bstream__all_1s_us(&bstream_objs[tx_aux], NORMAL, bstrap_pchg_us);
+	bstream__all_0s_us(&bstream_objs[tx_h1], NORMAL, bstrap_pchg_us);
+	bstream__all_0s_us(&bstream_objs[tx_h2], NORMAL, bstrap_pchg_us);
+	bstream__all_1s_us(&bstream_objs[tx_l1], NORMAL, bstrap_pchg_us);
+	bstream__all_1s_us(&bstream_objs[tx_l2], NORMAL, bstrap_pchg_us);
+	bstream__all_0s_us(&bstream_objs[tx_damp], NORMAL, bstrap_pchg_us);
+	bstream__all_0s_us(&bstream_objs[tx_dump], NORMAL, bstrap_pchg_us);
+	bstream__all_0s_us(&bstream_objs[tx_charge], NORMAL, bstrap_pchg_us);
+
+	// precharge the inductor
+	bstream__all_0s_us(&bstream_objs[tx_aux], NORMAL, ind_pchg_us);
+	bstream__all_1s_us(&bstream_objs[tx_h1], NORMAL, ind_pchg_us);
+	bstream__all_1s_us(&bstream_objs[tx_h2], NORMAL, ind_pchg_us);
+	bstream__all_1s_us(&bstream_objs[tx_l1], NORMAL, ind_pchg_us);
+	bstream__all_1s_us(&bstream_objs[tx_l2], NORMAL, ind_pchg_us);
+	bstream__all_0s_us(&bstream_objs[tx_damp], NORMAL, ind_pchg_us);
+	bstream__all_0s_us(&bstream_objs[tx_dump], NORMAL, ind_pchg_us);
+	if (en_pchrg) {
+		bstream__all_1s_us(&bstream_objs[tx_charge], NORMAL, ind_pchg_us);
+	}
+	else {
+		bstream__all_0s_us(&bstream_objs[tx_charge], NORMAL, ind_pchg_us);
+	}
+
+	// generate RF pulse
+	unsigned int RFclk_period = (unsigned int) round(clk_MHz / RFclk_MHz);
+	unsigned int RF_Hi = (unsigned int) round(dtcl * clk_MHz / RFclk_MHz);
+	unsigned int RF_Lo = RFclk_period - RF_Hi;
+
+	// extend the precharge phase to buy some time to get phase shift
+	unsigned long dly_twk = 100;
+	bstream__all_1s(&bstream_objs[tx_aux], NORMAL, dly_twk);
+	if (mode == 0x01) {
+		bstream__all_1s(&bstream_objs[tx_h1], NORMAL, dly_twk - ( ( RF_Hi - RF_Lo ) >> 1 ));
+		bstream__all_1s(&bstream_objs[tx_h2], NORMAL, dly_twk);
+		bstream__all_1s(&bstream_objs[tx_l1], NORMAL, dly_twk);
+		bstream__all_1s(&bstream_objs[tx_l2], NORMAL, dly_twk - ( ( RF_Hi - RF_Lo ) >> 1 ));
+	}
+	else if (mode == 0x02) {
+		bstream__all_1s(&bstream_objs[tx_h1], NORMAL, dly_twk - ( ( RF_Hi - RF_Lo ) >> 1 ) - ( ( RF_Hi - RF_Lo ) >> 3 ));
+		bstream__all_1s(&bstream_objs[tx_h2], NORMAL, dly_twk + ( ( RF_Hi - RF_Lo ) >> 3 ));
+		bstream__all_1s(&bstream_objs[tx_l1], NORMAL, dly_twk);
+		bstream__all_1s(&bstream_objs[tx_l2], NORMAL, dly_twk - ( ( RF_Hi - RF_Lo ) >> 1 ));
+	}
+	else if (mode == 0x03) {
+		bstream__all_1s(&bstream_objs[tx_h1], NORMAL, dly_twk - ( ( RF_Hi - RF_Lo ) >> 1 ));
+		bstream__all_1s(&bstream_objs[tx_h2], NORMAL, dly_twk);
+		bstream__all_1s(&bstream_objs[tx_l1], NORMAL, dly_twk + ( ( RF_Hi - RF_Lo ) >> 3 ));
+		bstream__all_1s(&bstream_objs[tx_l2], NORMAL, dly_twk - ( ( RF_Hi - RF_Lo ) >> 1 ) - ( ( RF_Hi - RF_Lo ) >> 3 ));
+	}
+	bstream__all_0s(&bstream_objs[tx_damp], NORMAL, dly_twk);
+	bstream__all_0s(&bstream_objs[tx_dump], NORMAL, dly_twk);
+	if (en_pchrg) {
+		bstream__all_1s(&bstream_objs[tx_charge], NORMAL, dly_twk);
+	}
+	else {
+		bstream__all_0s(&bstream_objs[tx_charge], NORMAL, dly_twk);
+	}
+
+	/* precharge the tx coil
+	 bstream__all_1s_us(&bstream_objs[tx_h1], NORMAL, tx_coil_pchg_us);
+	 bstream__all_0s_us(&bstream_objs[tx_h2], NORMAL, tx_coil_pchg_us);
+	 bstream__all_0s_us(&bstream_objs[tx_l1], NORMAL, tx_coil_pchg_us);
+	 bstream__all_1s_us(&bstream_objs[tx_l2], NORMAL, tx_coil_pchg_us);
+	 bstream__all_0s_us(&bstream_objs[tx_damp], NORMAL, tx_coil_pchg_us);
+	 bstream__all_0s_us(&bstream_objs[tx_dump], NORMAL, tx_coil_pchg_us);
+	 if (en_pchrg) {
+	 bstream__all_1s_us(&bstream_objs[tx_charge], NORMAL, tx_coil_pchg_us);
+	 }
+	 else {
+	 bstream__all_0s_us(&bstream_objs[tx_charge], NORMAL, tx_coil_pchg_us);
+	 }
+	 */
+
+	// loop start
+	bstream__all_0s(&bstream_objs[tx_aux], LOOP_STA, RF_Hi);
+	if (mode == 0x01) {
+		bstream__all_1s(&bstream_objs[tx_h1], LOOP_STA, RF_Hi);
+		bstream__all_0s(&bstream_objs[tx_h2], LOOP_STA, RF_Lo);
+		bstream__all_0s(&bstream_objs[tx_l1], LOOP_STA, RF_Lo);
+		bstream__all_1s(&bstream_objs[tx_l2], LOOP_STA, RF_Hi);
+	}
+	else if (mode == 0x02) {
+		bstream__all_1s(&bstream_objs[tx_h1], LOOP_STA, RF_Hi + ( ( RF_Hi - RF_Lo ) >> 2 ));
+		bstream__all_0s(&bstream_objs[tx_h2], LOOP_STA, RF_Lo - ( ( RF_Hi - RF_Lo ) >> 2 ));
+		bstream__all_0s(&bstream_objs[tx_l1], LOOP_STA, RF_Lo);
+		bstream__all_1s(&bstream_objs[tx_l2], LOOP_STA, RF_Hi);
+	}
+	else if (mode == 0x03) {
+		bstream__all_1s(&bstream_objs[tx_h1], LOOP_STA, RF_Hi);
+		bstream__all_0s(&bstream_objs[tx_h2], LOOP_STA, RF_Lo);
+		bstream__all_0s(&bstream_objs[tx_l1], LOOP_STA, RF_Lo - ( ( RF_Hi - RF_Lo ) >> 2 ));
+		bstream__all_1s(&bstream_objs[tx_l2], LOOP_STA, RF_Hi + ( ( RF_Hi - RF_Lo ) >> 2 ));
+	}
+	bstream__all_0s(&bstream_objs[tx_damp], LOOP_STA, RF_Hi);
+	bstream__all_0s(&bstream_objs[tx_dump], LOOP_STA, RF_Hi);
+	bstream__all_0s(&bstream_objs[tx_charge], LOOP_STA, RF_Hi);
+
+	// loop stop
+	bstream__all_0s(&bstream_objs[tx_aux], LOOP_STO, RF_Lo);
+	if (mode == 0x01) {
+		bstream__all_0s(&bstream_objs[tx_h1], LOOP_STO, RF_Lo);
+		bstream__all_1s(&bstream_objs[tx_h2], LOOP_STO, RF_Hi);
+		bstream__all_1s(&bstream_objs[tx_l1], LOOP_STO, RF_Hi);
+		bstream__all_0s(&bstream_objs[tx_l2], LOOP_STO, RF_Lo);
+	}
+	else if (mode == 0x02) {
+		bstream__all_0s(&bstream_objs[tx_h1], LOOP_STO, RF_Lo - ( ( RF_Hi - RF_Lo ) >> 2 ));
+		bstream__all_1s(&bstream_objs[tx_h2], LOOP_STO, RF_Hi + ( ( RF_Hi - RF_Lo ) >> 2 ));
+		bstream__all_1s(&bstream_objs[tx_l1], LOOP_STO, RF_Hi);
+		bstream__all_0s(&bstream_objs[tx_l2], LOOP_STO, RF_Lo);
+	}
+	else if (mode == 0x03) {
+		bstream__all_0s(&bstream_objs[tx_h1], LOOP_STO, RF_Lo);
+		bstream__all_1s(&bstream_objs[tx_h2], LOOP_STO, RF_Hi);
+		bstream__all_1s(&bstream_objs[tx_l1], LOOP_STO, RF_Hi + ( ( RF_Hi - RF_Lo ) >> 2 ));
+		bstream__all_0s(&bstream_objs[tx_l2], LOOP_STO, RF_Lo - ( ( RF_Hi - RF_Lo ) >> 2 ));
+	}
+	bstream__all_0s(&bstream_objs[tx_damp], LOOP_STO, RF_Lo);
+	bstream__all_0s(&bstream_objs[tx_dump], LOOP_STO, RF_Lo);
+	bstream__all_0s(&bstream_objs[tx_charge], LOOP_STO, RF_Lo);
+
+	// recover from the precharge phase shift
+	bstream__all_1s(&bstream_objs[tx_aux], NORMAL, RFclk_period);
+	bstream__all_0s(&bstream_objs[tx_damp], NORMAL, RFclk_period);
+	bstream__all_0s(&bstream_objs[tx_dump], NORMAL, RFclk_period);
+	bstream__all_0s(&bstream_objs[tx_charge], NORMAL, RFclk_period);
+	//if (mode == 0x01) {
+	bstream__all_1s(&bstream_objs[tx_h1], NORMAL, RFclk_period + ( ( RF_Hi - RF_Lo ) /*>> 1*/));
+	bstream__all_1s(&bstream_objs[tx_h2], NORMAL, RFclk_period);
+	bstream__all_1s(&bstream_objs[tx_l1], NORMAL, RFclk_period);
+	bstream__all_1s(&bstream_objs[tx_l2], NORMAL, RFclk_period + ( ( RF_Hi - RF_Lo ) /*>> 1*/));
+	//}
+	//else if (mode == 0x02) {
+	//	bstream__all_1s(&bstream_objs[tx_h1], NORMAL, RFclk_period + ( ( RF_Hi - RF_Lo ) /*>> 1*/) + ( ( RF_Hi - RF_Lo ) >> 2 /*>> 3*/));
+	//	bstream__all_1s(&bstream_objs[tx_h2], NORMAL, RFclk_period - ( ( RF_Hi - RF_Lo ) >> 2 /*>> 3*/));
+	//	bstream__all_1s(&bstream_objs[tx_l1], NORMAL, RFclk_period);
+	//	bstream__all_1s(&bstream_objs[tx_l2], NORMAL, RFclk_period + ( ( RF_Hi - RF_Lo ) /*>> 1*/));
+	//}
+	//else if (mode == 0x03) {
+	//	bstream__all_1s(&bstream_objs[tx_h1], NORMAL, RFclk_period + ( ( RF_Hi - RF_Lo ) /*>> 1*/));
+	//	bstream__all_1s(&bstream_objs[tx_h2], NORMAL, RFclk_period);
+	//	bstream__all_1s(&bstream_objs[tx_l1], NORMAL, RFclk_period - ( ( RF_Hi - RF_Lo ) >> 2 /*>> 3*/));
+	//	bstream__all_1s(&bstream_objs[tx_l2], NORMAL, RFclk_period + ( ( RF_Hi - RF_Lo ) /*>> 1*/) + ( ( RF_Hi - RF_Lo ) >> 2 /*>> 3*/));
+	//}
+
+	// flip the excitation
+	unsigned int i;
+	for (i = 0; i < dump_repetition; i++) {
+
+		bstream__all_0s(&bstream_objs[tx_aux], NORMAL, RFclk_period);   // this is for the whole RFclk period
+		bstream__all_0s(&bstream_objs[tx_damp], NORMAL, RFclk_period);
+		bstream__all_0s(&bstream_objs[tx_dump], NORMAL, RFclk_period);
+		bstream__all_0s(&bstream_objs[tx_charge], NORMAL, RFclk_period);
+
+		//if (mode == 0x01) {
+		bstream__all_0s(&bstream_objs[tx_h1], NORMAL, RF_Lo);   // this is for half RFclk period
+		bstream__all_1s(&bstream_objs[tx_h2], NORMAL, RF_Hi);
+		bstream__all_1s(&bstream_objs[tx_l1], NORMAL, RF_Hi);
+		bstream__all_0s(&bstream_objs[tx_l2], NORMAL, RF_Lo);
+
+		bstream__all_1s(&bstream_objs[tx_h1], NORMAL, RF_Hi);   // this is the other half RFclk period
+		bstream__all_0s(&bstream_objs[tx_h2], NORMAL, RF_Lo);
+		bstream__all_0s(&bstream_objs[tx_l1], NORMAL, RF_Lo);
+		bstream__all_1s(&bstream_objs[tx_l2], NORMAL, RF_Hi);
+		/*}
+		 else if (mode == 0x02) {
+		 bstream__all_0s(&bstream_objs[tx_h1], LOOP_STO, RF_Lo - ( ( RF_Hi - RF_Lo ) >> 2 ));
+		 bstream__all_1s(&bstream_objs[tx_h2], LOOP_STO, RF_Hi + ( ( RF_Hi - RF_Lo ) >> 2 ));
+		 bstream__all_1s(&bstream_objs[tx_l1], LOOP_STO, RF_Hi);
+		 bstream__all_0s(&bstream_objs[tx_l2], LOOP_STO, RF_Lo);
+
+		 bstream__all_1s(&bstream_objs[tx_h1], LOOP_STO, RF_Hi - ( ( RF_Lo - RF_Hi ) >> 2 ));
+		 bstream__all_0s(&bstream_objs[tx_h2], LOOP_STO, RF_Lo + ( ( RF_Lo - RF_Hi ) >> 2 ));
+		 bstream__all_0s(&bstream_objs[tx_l1], LOOP_STO, RF_Lo);
+		 bstream__all_1s(&bstream_objs[tx_l2], LOOP_STO, RF_Hi);
+		 }
+
+		 else if (mode == 0x03) {
+		 bstream__all_0s(&bstream_objs[tx_h1], LOOP_STO, RF_Lo);
+		 bstream__all_1s(&bstream_objs[tx_h2], LOOP_STO, RF_Hi);
+		 bstream__all_1s(&bstream_objs[tx_l1], LOOP_STO, RF_Hi + ( ( RF_Hi - RF_Lo ) >> 2 ));
+		 bstream__all_0s(&bstream_objs[tx_l2], LOOP_STO, RF_Lo - ( ( RF_Hi - RF_Lo ) >> 2 ));
+
+		 bstream__all_1s(&bstream_objs[tx_h1], LOOP_STO, RF_Hi);
+		 bstream__all_0s(&bstream_objs[tx_h2], LOOP_STO, RF_Lo);
+		 bstream__all_0s(&bstream_objs[tx_l1], LOOP_STO, RF_Lo + ( ( RF_Lo - RF_Hi ) >> 2 ));
+		 bstream__all_1s(&bstream_objs[tx_l2], LOOP_STO, RF_Hi - ( ( RF_Lo - RF_Hi ) >> 2 ));
+		 }*/
+	}
+
+	// dump all the current
+	bstream__all_0s_us(&bstream_objs[tx_aux], NORMAL, dump_len_us);
+	bstream__all_0s_us(&bstream_objs[tx_h1], NORMAL, dump_len_us);
+	bstream__all_0s_us(&bstream_objs[tx_h2], NORMAL, dump_len_us);
+	bstream__all_0s_us(&bstream_objs[tx_l1], NORMAL, dump_len_us);
+	bstream__all_0s_us(&bstream_objs[tx_l2], NORMAL, dump_len_us);
+	bstream__all_1s_us(&bstream_objs[tx_damp], NORMAL, dump_len_us);
+	bstream__all_1s_us(&bstream_objs[tx_dump], NORMAL, dump_len_us);
+	bstream__all_0s_us(&bstream_objs[tx_charge], NORMAL, dump_len_us);
+
+	// turn-off everything
+	double tail_us = 100;
+	bstream__all_1s_us(&bstream_objs[tx_aux], NORMAL, tail_us);
+	bstream__all_0s_us(&bstream_objs[tx_h1], NORMAL, tail_us);
+	bstream__all_0s_us(&bstream_objs[tx_h2], NORMAL, tail_us);
+	bstream__all_0s_us(&bstream_objs[tx_l1], NORMAL, tail_us);
+	bstream__all_0s_us(&bstream_objs[tx_l2], NORMAL, tail_us);
+	bstream__all_0s_us(&bstream_objs[tx_damp], NORMAL, tail_us);
+	bstream__all_0s_us(&bstream_objs[tx_dump], NORMAL, tail_us);
+	bstream__all_0s_us(&bstream_objs[tx_charge], NORMAL, tail_us);
+
+	// end of sequence
+	bstream__end_of_seq (&bstream_objs[tx_aux]);
+	bstream__end_of_seq(&bstream_objs[tx_h1]);
+	bstream__end_of_seq(&bstream_objs[tx_h2]);
+	bstream__end_of_seq(&bstream_objs[tx_l1]);
+	bstream__end_of_seq(&bstream_objs[tx_l2]);
+	bstream__end_of_seq(&bstream_objs[tx_damp]);
+	bstream__end_of_seq(&bstream_objs[tx_dump]);
+	bstream__end_of_seq(&bstream_objs[tx_charge]);
+
+	bstream_start();
+
+}
+
 void bstream__prechrg_n_rf_n_dump(char mode, float clk_MHz, float RFclk_MHz, double dtcl, double ind_pchg_us, double tx_coil_pchg_us, double dump_len_us, unsigned char en_pchrg, unsigned int repetition) {
 
 	// RF output mode (char mode):

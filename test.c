@@ -47,6 +47,7 @@ int main(int argc, char * argv[]) {
 	float RFCLK = atof(argv[10]);
 	float vvarac = atof(argv[11]);
 	double tx_coil_pchg_us = atof(argv[12]);
+	unsigned int dump_repetition = atoi(argv[13]);
 
 	double max_plen = 500;   // set the maximum plen
 	if (ind_pchg_us > max_plen) {
@@ -83,10 +84,14 @@ int main(int argc, char * argv[]) {
 	// bstream__prechrg_n_dump(CLK_50, bstrap_pchg_us, ind_pchg_us, tail_us, dump_dly_us, dump_len_us, en_pchrg);
 
 	// test rf output
-	bstream__prechrg_n_rf_n_dump(RF_mode, CLK_50, RFCLK, dtcl, ind_pchg_us, tx_coil_pchg_us, dump_len_us, en_pchrg, repetition);
+	// bstream__prechrg_n_rf_n_dump(RF_mode, CLK_50, RFCLK, dtcl, ind_pchg_us, tx_coil_pchg_us, dump_len_us, en_pchrg, repetition);
+	bstream__prechrg_n_rf_n_dump_180(/*RF_mode,*/CLK_50, RFCLK, dtcl, ind_pchg_us, tx_coil_pchg_us, dump_len_us, en_pchrg, repetition, dump_repetition);
 
 	// slow toggle output
-	// bstream__toggle(&bstream_objs[tx_l2], CLK_50, 3000000, 1000);
+	//bstream__toggle(&bstream_objs[tx_l1], CLK_50, 3000000, 1000);
+	//bstream__toggle(&bstream_objs[tx_l2], CLK_50, 3000000, 1000);
+	//bstream__toggle(&bstream_objs[tx_h1], CLK_50, 3000000, 1000);
+	//bstream__toggle(&bstream_objs[tx_h2], CLK_50, 3000000, 1000);
 
 	// init_dac_ad5722r(lwaxi_rx_dac);
 	// wr_dac_ad5722r(lwaxi_rx_dac, DAC_B, vvarac, ENABLE_MESSAGE);
